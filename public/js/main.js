@@ -40,8 +40,8 @@ const localStreamConstraints = {
 
 
 // Prompting for room name:
-const room = 'SgPdEd5PoEen6Y8R';
-//prompt('Enter room name:');
+// const room = 'SgPdEd5PoEen6Y8R';
+const room = prompt('Enter room name:');
 
 //Initializing socket.io
 const socket = io.connect();
