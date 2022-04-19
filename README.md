@@ -1,2 +1,3 @@
-# you-through-me
-art project (concept by Kalli Ioumpa)
+# you through me
+
+Art project (concept by Kalli Ioumpa)
