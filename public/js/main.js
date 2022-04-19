@@ -256,7 +256,7 @@ function stop() {
 
 // ********
 
-document.body.requestFullscreen();
+// document.body.requestFullscreen();
 
       init();
       animate();
