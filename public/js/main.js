@@ -1,9 +1,7 @@
 'use strict';
 
-
-      import * as THREE from './three.module.js';
-
-      import { StereoEffect } from './StereoEffect.js';
+import * as THREE from './three.module.js';
+import { StereoEffect } from './StereoEffect.js';
 
 var turnConfig = {
     iceServers:[]
@@ -33,23 +31,26 @@ let windowHalfY = window.innerHeight / 2;
 //Initialize turn/stun server here
 const pcConfig = turnConfig;
 
-const localStreamConstraints = {
-//     audio: false,
-    video: { width: 1280, height: 720, facingMode: 'environment' } 
-  };
-
-
-// Prompting for room name:
-// const room = 'SgPdEd5PoEen6Y8R';
-const room = prompt('Enter room name:');
 
 //Initializing socket.io
 const socket = io.connect();
 
-if (room !== '') {
-  socket.emit('create or join', room);
-  console.log('Attempted to create or  join room', room);
+
+// Prompting for room name:
+// const room = 'SgPdEd5PoEen6Y8R';
+let room = '';
+while (room == '') {
+      room = prompt('Enter room name:');
 }
+
+console.log('Attempted to create or  join room', room);
+socket.emit('create or join', room);
+
+const localStreamConstraints = {
+    audio: room[0] === 'a', // if the room starts with an 'a' it streams audio
+    video: { width: 1280, height: 720, facingMode: 'environment' } 
+};
+
 
 //Defining socket connections for signalling
 socket.on('created', function(room) {
