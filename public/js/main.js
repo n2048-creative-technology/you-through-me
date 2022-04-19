@@ -34,7 +34,7 @@ let windowHalfY = window.innerHeight / 2;
 const pcConfig = turnConfig;
 
 const localStreamConstraints = {
-    audio: false,
+//     audio: false,
     video: { width: 1280, height: 720, facingMode: 'environment' } 
   };
 
