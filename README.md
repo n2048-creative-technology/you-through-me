@@ -2,6 +2,6 @@
 
 ## Art project 
 
-Concept and original idea by `Kalli Ioumpa`
+Concept by `Kalli Ioumpa`
 Coded by `Mauricio van der Maesen`
 
