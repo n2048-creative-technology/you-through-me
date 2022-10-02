@@ -7,11 +7,10 @@
 
 var turnConfig = {
     iceServers:[]
-    // iceServers: [{   urls: [ "stun:bn-turn1.xirsys.com" ]}, {   username: "0kYXFmQL9xojOrUy4VFemlTnNPVFZpp7jfPjpB3AjxahuRe4QWrCs6Ll1vDc7TTjAAAAAGAG2whXZWJUdXRzUGx1cw==",   credential: "285ff060-5a58-11eb-b269-0242ac140004",   urls: [       "turn:bn-turn1.xirsys.com:80?transport=udp",       "turn:bn-turn1.xirsys.com:3478?transport=udp",       "turn:bn-turn1.xirsys.com:80?transport=tcp",       "turn:bn-turn1.xirsys.com:3478?transport=tcp",       "turns:bn-turn1.xirsys.com:443?transport=tcp",       "turns:bn-turn1.xirsys.com:5349?transport=tcp"   ]}]
 };
 
 //Defining some global utility variables
-let isChannelReady = false;
+let isChannelReady = false; 
 let isInitiator = false;
 let isStarted = false;
 let localStream;
@@ -40,8 +39,9 @@ const localStreamConstraints = {
 
 
 // Prompting for room name:
-const room = 'SgPdEd5PoEen6Y8R';
-//prompt('Enter room name:');
+let room = 'SgPdEd5PoEen6Y8R';
+// let room = prompt('Enter room name:');
+room = room.toLowerCase();
 
 //Initializing socket.io
 const socket = io.connect();
@@ -76,7 +76,6 @@ socket.on('log', function(array) {
   console.log.apply(console, array);
 });
 
-
 //Driver code
 socket.on('message', function(message, room) {
     console.log('Client received message:', message,  room);
@@ -108,7 +107,6 @@ function sendMessage(message, room) {
   console.log('Client sending message: ', message, room);
   socket.emit('message', message, room);
 }
-
 
 
 //Displaying Local Stream and Remote Stream on webpage
@@ -238,16 +236,18 @@ function handleRemoteStreamRemoved(event) {
 function hangup() {
   console.log('Hanging up.');
   stop();
+  remoteVideo.stop();
   sendMessage('bye',room);
 }
 
 function handleRemoteHangup() {
   console.log('Session terminated.');
   stop();
-  isInitiator = false;
 }
 
 function stop() {
+  isInitiator = false;
+  isChannelReady = false;
   isStarted = false;
   pc.close();
   pc = null;

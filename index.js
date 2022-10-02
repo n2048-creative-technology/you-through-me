@@ -21,6 +21,7 @@ server.listen(process.env.PORT || 8000);
 
 var io = socketIO(server);
 
+
 io.sockets.on('connection', function(socket) {
 
 	// Convenience function to log server messages on the client.
@@ -36,12 +37,16 @@ io.sockets.on('connection', function(socket) {
     
     //Defining Socket Connections
     socket.on('message', function(message, room) {
+      room = room.toLowerCase();
+
 	  log('Client said: ', message);
 	  // for a real app, would be room-only (not broadcast)
 	  socket.in(room).emit('message', message, room);
 	});
   
 	socket.on('create or join', function(room) {
+	  room = room.toLowerCase();
+	  
 	  log('Received request to create or join room ' + room);
   
 	  var clientsInRoom = io.sockets.adapter.rooms[room];
@@ -52,9 +57,8 @@ io.sockets.on('connection', function(socket) {
 		socket.join(room);
 		log('Client ID ' + socket.id + ' created room ' + room);
 		socket.emit('created', room, socket.id);
-  
-	  // } else if (numClients === 1) {
 	  } else {
+	  // } else if (numClients === 1) {
 		log('Client ID ' + socket.id + ' joined room ' + room);
 		io.sockets.in(room).emit('join', room);
 		socket.join(room);
@@ -64,6 +68,14 @@ io.sockets.on('connection', function(socket) {
 	 //  else { // max two clients
 		// socket.emit('full', room);
 	 //  }
+
+	  // console.log(io.sockets.adapter.rooms);	
+
+	  socket.on('bye', function(){
+		socket.leave(room);
+		console.log('received bye');
+	  });
+
 	});
   
 	socket.on('ipaddr', function() {
@@ -77,8 +89,5 @@ io.sockets.on('connection', function(socket) {
 	  }
 	});
   
-	socket.on('bye', function(){
-	  console.log('received bye');
-	});
-  
+
   });
