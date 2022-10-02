@@ -1,9 +1,7 @@
 'use strict';
 
-
-      import * as THREE from './three.module.js';
-
-      import { StereoEffect } from './StereoEffect.js';
+import * as THREE from './three.module.js';
+import { StereoEffect } from './StereoEffect.js';
 
 var turnConfig = {
     iceServers:[]
@@ -37,7 +35,6 @@ const localStreamConstraints = {
     video: { width: 1280, height: 720, facingMode: 'environment' } 
   };
 
-
 // Prompting for room name:
 // let room = 'SgPdEd5PoEen6Y8R';
 let room = prompt('Enter room name:');
@@ -46,10 +43,22 @@ room = room.toLowerCase();
 //Initializing socket.io
 const socket = io.connect();
 
-if (room !== '') {
-  socket.emit('create or join', room);
-  console.log('Attempted to create or  join room', room);
+
+// Prompting for room name:
+// const room = 'SgPdEd5PoEen6Y8R';
+let room = '';
+while (room == '') {
+      room = prompt('Enter room name:');
 }
+
+console.log('Attempted to create or  join room', room);
+socket.emit('create or join', room);
+
+const localStreamConstraints = {
+    audio: room[0] === 'a', // if the room starts with an 'a' it streams audio
+    video: { width: 1280, height: 720, facingMode: 'environment' } 
+};
+
 
 //Defining socket connections for signalling
 socket.on('created', function(room) {
@@ -101,13 +110,11 @@ socket.on('message', function(message, room) {
 });
   
 
-
 //Function to send message in a room
 function sendMessage(message, room) {
   console.log('Client sending message: ', message, room);
   socket.emit('message', message, room);
 }
-
 
 //Displaying Local Stream and Remote Stream on webpage
 localVideo = document.getElementById( 'localVideo' );
@@ -255,6 +262,7 @@ function stop() {
 
 // ********
 
+// document.body.requestFullscreen();
 
       init();
       animate();
