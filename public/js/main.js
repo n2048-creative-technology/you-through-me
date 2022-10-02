@@ -26,19 +26,11 @@ let mouseY = 0;
 let windowHalfX = window.innerWidth / 2;
 let windowHalfY = window.innerHeight / 2;
 
-
 //Initialize turn/stun server here
 const pcConfig = turnConfig;
 
-const localStreamConstraints = {
-    audio: false,
-    video: { width: 1280, height: 720, facingMode: 'environment' } 
-  };
-
-
 //Initializing socket.io
 const socket = io.connect();
-
 
 // Prompting for room name:
 // const room = 'SgPdEd5PoEen6Y8R';
@@ -46,7 +38,6 @@ let room = '';
 while (room == '') {
       room = prompt('Enter room name:');
 }
-
 room = room.toLowerCase();
 
 console.log('Attempted to create or  join room', room);
