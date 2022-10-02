@@ -35,10 +35,6 @@ const localStreamConstraints = {
     video: { width: 1280, height: 720, facingMode: 'environment' } 
   };
 
-// Prompting for room name:
-// let room = 'SgPdEd5PoEen6Y8R';
-let room = prompt('Enter room name:');
-room = room.toLowerCase();
 
 //Initializing socket.io
 const socket = io.connect();
@@ -50,6 +46,8 @@ let room = '';
 while (room == '') {
       room = prompt('Enter room name:');
 }
+
+room = room.toLowerCase();
 
 console.log('Attempted to create or  join room', room);
 socket.emit('create or join', room);
