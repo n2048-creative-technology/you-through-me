@@ -15,6 +15,10 @@ app.get("/", function(req, res){
 	res.render("index.ejs");
 });
 
+app.get("/public", function(req, res){
+	res.render("public.ejs");
+});
+
 var server = http.createServer(app);
 
 server.listen(process.env.PORT || 8000);

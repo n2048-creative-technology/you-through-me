@@ -1,7 +1,6 @@
 'use strict';
 
 import * as THREE from './three.module.js';
-import { StereoEffect } from './StereoEffect.js';
 
 var turnConfig = {
     // iceServers:[]
@@ -16,9 +15,9 @@ var turnConfig = {
 let isChannelReady = false; 
 let isInitiator = false;
 let isStarted = false;
-let localStream;
 let pc;
-let remoteStream;
+let remoteStream1;
+let remoteStream2;
 let turnReady;
 
 let container;
@@ -86,9 +85,7 @@ socket.on('message', function(message, room) {
     if (message === 'got user media') {
       maybeStart();
     } else if (message.type === 'offer') {
-      if (!isInitiator && !isStarted) {
-        maybeStart();
-      }
+      maybeStart();
       pc.setRemoteDescription(new RTCSessionDescription(message));
       doAnswer();
     } else if (message.type === 'answer' && isStarted) {
@@ -112,41 +109,17 @@ function sendMessage(message, room) {
 }
 
 //Displaying Local Stream and Remote Stream on webpage
-localVideo = document.getElementById( 'localVideo' );
-remoteVideo = document.getElementById( 'remoteVideo' );
+remoteVideo1 = document.getElementById( 'remoteVideo1' );
+remoteVideo2 = document.getElementById( 'remoteVideo2' );
 
 
 console.log("Going to find Local media");
-
-
-if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
-  navigator.mediaDevices.getUserMedia( localStreamConstraints )
-    .then( gotStream )
-    .catch( function ( error ) {
-      console.error( 'Unable to access the camera/webcam.', error );
-    } );
-} else {
-  console.error( 'MediaDevices interface not available.' );
-}
-
-//If found local stream
-function gotStream(stream) {
-  console.log('Adding local stream.');
-  localStream = stream;
-  localVideo.srcObject = stream;
-  localVideo.play();
-  sendMessage('got user media', room);
-  if (isInitiator) {
-    maybeStart();
-  }
-}
 
 
 console.log('Getting user media with constraints', localStreamConstraints);
 
 //If initiator, create the peer connection
 function maybeStart() {
-  console.log('>>>>>>> maybeStart() ', isStarted, localStream, isChannelReady);
   if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) {
     console.log('>>>>>> creating peer connection');
     createPeerConnection();
@@ -222,12 +195,24 @@ function onCreateSessionDescriptionError(error) {
   trace('Failed to create session description: ' + error.toString());
 }
 
+let streamsAdded=0;
 
 function handleRemoteStreamAdded(event) {
   console.log('Remote stream added.');
-  remoteStream = event.stream;
-  remoteVideo.srcObject = remoteStream;
-  remoteVideo.play();
+  switch(streamsAdded){
+    case 0:
+      streamsAdded = 1
+      remoteStream1 = event.stream;
+      remoteVideo1.srcObject = remoteStream1;
+      remoteVideo1.play();
+      break;
+    case 1:
+      streamsAdded = 2
+      remoteStream2 = event.stream;
+      remoteVideo2.srcObject = remoteStream2;
+      remoteVideo2.play();    
+      break;
+  }
   // animate();
 }
 
@@ -282,48 +267,41 @@ function stop() {
         renderer.setSize( window.innerWidth, window.innerHeight );
         container.appendChild( renderer.domElement );
 
-          // video = document.getElementById( 'remoteVideo' );
-        remoteTexture = new THREE.VideoTexture( remoteVideo );
-        const remoteParameters = { color: 0xffffff, map: remoteTexture };
-        remoteMaterial = new THREE.MeshLambertMaterial( remoteParameters );
-        remoteGeometry = new THREE.PlaneGeometry( 16, 9 );
-        remoteGeometry.scale( 1.,1.,1. );
-        remoteMesh = new THREE.Mesh( remoteGeometry, remoteMaterial );
+        remoteTexture1 = new THREE.VideoTexture( remoteVideo1 );
+        const remoteParameters1 = { color: 0xffffff, map: remoteTexture1 };
+        remoteMaterial1 = new THREE.MeshLambertMaterial( remoteParameters1 );
+        remoteGeometry1 = new THREE.PlaneGeometry( 16, 9 );
+        remoteGeometry1.scale( 1.,1.,1. );
+        remoteMesh1 = new THREE.Mesh( remoteGeometry1, remoteMaterial1 );
 
-        remoteMesh.position.x = 0;
-        remoteMesh.position.y = 0;
-        remoteMesh.position.z = 0;
-
-        /// NOTE:  Play with this number -->
-        remoteMesh.scale.x = remoteMesh.scale.y = remoteMesh.scale.z = 30.;
-
-        scene.add( remoteMesh );
-
-
-        localTexture = new THREE.VideoTexture( localVideo );
-        const localParameters = { color: 0xffffff, map: localTexture };
-        localMaterial = new THREE.MeshLambertMaterial( localParameters );
-        localGeometry = new THREE.PlaneGeometry( 16, 9 );
-        localGeometry.scale( 1.,1.,1. );
-        localMesh = new THREE.Mesh( localGeometry, localMaterial );
-
-        localMesh.position.x = 80;
-        localMesh.position.y = -100;
-        localMesh.position.z = 0;
+        remoteMesh1.position.x = 0;
+        remoteMesh1.position.y = 0;
+        remoteMesh1.position.z = 0;
 
         /// NOTE:  Play with this number -->
-        localMesh.scale.x = localMesh.scale.y = localMesh.scale.z = 8.;
+        remoteMesh1.scale.x = remoteMesh1.scale.y = remoteMesh1.scale.z = 15.;
 
-        scene.add( localMesh );
+        scene.add( remoteMesh1 );
+
+        remoteTexture2 = new THREE.VideoTexture( remoteVideo2 );
+        const remoteParameters2 = { color: 0xffffff, map: remoteTexture2 };
+        remoteMaterial2 = new THREE.MeshLambertMaterial( remoteParameters2 );
+        remoteGeometry2 = new THREE.PlaneGeometry( 16, 9 );
+        remoteGeometry2.scale( 1.,1.,1. );
+        remoteMesh2 = new THREE.Mesh( remoteGeometry2, remoteMaterial2 );
+
+        remoteMesh2.position.x = 50;
+        remoteMesh2.position.y = 0;
+        remoteMesh2.position.z = 0;
+
+        /// NOTE:  Play with this number -->
+        remoteMesh2.scale.x = remoteMesh2.scale.y = remoteMesh2.scale.z = 15.;
+
+        scene.add( remoteMesh2 );
 
       
 
         renderer.autoClear = false;
-
-
-        effect = new StereoEffect( renderer );
-        effect.setSize( window.innerWidth, window.innerHeight );
-
 
         window.addEventListener( 'resize', onWindowResize );
 

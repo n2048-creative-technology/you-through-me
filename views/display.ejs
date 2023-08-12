@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>You through me</title>
+    <meta charset="utf-8">
+<!--    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"> -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <script type='text/javascript' charset='utf-8'>
+        // Hides mobile browser's address bar when page is done loading.
+          window.addEventListener('load', function(e) {
+            setTimeout(function() { window.scrollTo(0, 1); }, 1);
+          }, false);
+
+          document.addEventListener("orientationchange", function(event){
+              switch(window.orientation) 
+              {  
+                  case -90: case 90:
+                      /* Device is in landscape mode */
+                      break; 
+                  default:
+                      /* Device is in portrait mode */
+              }
+          });
+    </script>
+
+    <link type="text/css" rel="stylesheet" href="css/display.css">
+
+  <script type="importmap">
+      {
+        "imports": {
+          "three": "./js/three.module.js"
+        }
+      }
+    </script>
+    <script type="module" src="./js/three.module.js"></script>
+    <script async src="js/es-module-shims.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/adapter-latest.js"></script>
+
+  </head>
+  <body>
+
+    <!-- <video id="video" style="display:none" autoplay playsinline></video> -->
+
+    <video id="remoteVideo1" style="display:none;" autoplay playsinline></video>
+    <video id="remoteVideo2" style="display:none;" autoplay playsinline></video>
+
+  
+  <!-- Import script containing WebRTC related functions -->
+  <script type="module" src="./js/display.js"></script>
+
+
+  </body>
+</html>
+
